@@ -92,4 +92,4 @@ This produces platform-specific bundles:
 
 ## License
 
-TBD
+[MIT](LICENSE)
