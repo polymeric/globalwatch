@@ -1,0 +1,76 @@
+<svg width="1400" height="900" viewBox="0 0 1400 900" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#021002"/>
+      <stop offset="100%" stop-color="#020702"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="40%">
+      <stop offset="0%" stop-color="#1cc95f" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#1cc95f" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3"/>
+    </filter>
+    <style>
+      .line { stroke: #38d56d; stroke-opacity: .42; fill: none; }
+      .outline { stroke: #8dffb3; stroke-width: 3; fill: none; }
+      .country { stroke: #9dffbe; stroke-width: 3; fill: none; stroke-linecap: round; }
+      .marker { stroke: #bfffd4; stroke-width: 2; fill: #174b24; }
+      .text { fill: #7effa7; font-family: Menlo, Monaco, Consolas, monospace; }
+    </style>
+    <pattern id="scanlines" width="6" height="6" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="6" y2="0" stroke="#0d3a14" stroke-opacity="0.28"/>
+    </pattern>
+    <clipPath id="globeClip">
+      <circle cx="700" cy="460" r="280"/>
+    </clipPath>
+  </defs>
+
+  <rect width="1400" height="900" fill="url(#bg)"/>
+  <rect width="1400" height="900" fill="url(#scanlines)"/>
+
+  <rect x="40" y="40" width="1320" height="820" fill="none" stroke="#1f7f35" stroke-opacity="0.6" stroke-width="2"/>
+
+  <circle cx="700" cy="460" r="320" fill="url(#glow)" filter="url(#soft)"/>
+  <circle cx="700" cy="460" r="280" class="outline"/>
+
+  <!-- Grid lines -->
+  <g clip-path="url(#globeClip)">
+    <ellipse cx="700" cy="460" rx="260" ry="55" class="line"/>
+    <ellipse cx="700" cy="460" rx="270" ry="90" class="line"/>
+    <ellipse cx="700" cy="460" rx="278" ry="130" class="line"/>
+    <ellipse cx="700" cy="460" rx="282" ry="170" class="line"/>
+    <ellipse cx="700" cy="460" rx="284" ry="210" class="line"/>
+
+    <ellipse cx="700" cy="460" rx="65" ry="280" class="line"/>
+    <ellipse cx="700" cy="460" rx="120" ry="280" class="line"/>
+    <ellipse cx="700" cy="460" rx="175" ry="280" class="line"/>
+    <ellipse cx="700" cy="460" rx="228" ry="280" class="line"/>
+
+    <!-- Stylized country outlines -->
+    <path class="country" d="M560 340 L525 365 L510 400 L525 450 L545 495 L535 540 L560 585 L600 612 L625 580 L618 538 L632 500 L615 452 L610 410 L585 372 Z"/>
+    <path class="country" d="M690 320 L760 336 L804 370 L794 425 L832 470 L815 525 L770 560 L720 542 L690 500 L668 445 L677 392 Z"/>
+    <path class="country" d="M860 565 L906 585 L930 618 L892 640 L850 620 Z"/>
+  </g>
+
+  <!-- Event markers -->
+  <g>
+    <polygon class="marker" points="640,372 625,398 655,398"/>
+    <line x1="640" y1="398" x2="640" y2="426" stroke="#9dffbe" stroke-width="2"/>
+
+    <polygon class="marker" points="770,430 755,456 785,456"/>
+    <line x1="770" y1="456" x2="770" y2="484" stroke="#9dffbe" stroke-width="2"/>
+
+    <polygon class="marker" points="590,505 575,531 605,531"/>
+    <line x1="590" y1="531" x2="590" y2="560" stroke="#9dffbe" stroke-width="2"/>
+
+    <polygon class="marker" points="730,555 715,581 745,581"/>
+    <line x1="730" y1="581" x2="730" y2="610" stroke="#9dffbe" stroke-width="2"/>
+
+    <polygon class="marker" points="860,375 845,401 875,401"/>
+    <line x1="860" y1="401" x2="860" y2="430" stroke="#9dffbe" stroke-width="2"/>
+  </g>
+
+  <text x="62" y="78" class="text" font-size="28" font-weight="700">GLOBALWATCH // SITUATIONAL GLOBE</text>
+  <text x="62" y="835" class="text" font-size="20">[CLICK] PAUSE/RESUME   [DRAG] ROTATE/TILT   [VOICE] ASSISTANT</text>
+</svg>
