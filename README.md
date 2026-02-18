@@ -2,6 +2,8 @@
 
 A desktop application that displays an interactive 3D globe with a green-on-black matrix-style theme. It renders country outlines, lat/lon grid lines, and triangular markers for dangerous weather patterns, crises, and events sourced from news feeds. Includes a voice-powered AI assistant interface.
 
+![globalwatch](images/666_kb.png)
+
 ## Features
 
 - Interactive 3D globe with auto-spin (click to pause, drag to rotate/tilt)
