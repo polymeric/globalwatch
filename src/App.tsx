@@ -1,4 +1,5 @@
 import Globe from './components/Globe';
+import VoiceButton from './components/VoiceButton';
 import './App.css';
 
 function App() {
@@ -10,6 +11,7 @@ function App() {
       </header>
 
       <Globe />
+      <VoiceButton />
 
       <footer className="hud-status">
         <span className="left">
