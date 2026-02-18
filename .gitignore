@@ -25,3 +25,11 @@ src-tauri/target
 *.njsproj
 *.sln
 *.sw?
+
+# Environment files
+.env
+.env.*
+
+# SQLite databases
+*.sqlite
+*.db
