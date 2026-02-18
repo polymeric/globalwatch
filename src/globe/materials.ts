@@ -24,9 +24,9 @@ export const gridMaterial = new THREE.LineBasicMaterial({
 });
 
 export const countryMaterial = new THREE.LineBasicMaterial({
-  color: COLORS.primary,
+  color: 0x1a8a2a,
   transparent: true,
-  opacity: 0.8,
+  opacity: 0.95,
 });
 
 export const markerMaterial = new THREE.MeshBasicMaterial({

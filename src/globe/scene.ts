@@ -31,27 +31,33 @@ export function initGlobeScene(container: HTMLElement): GlobeScene {
   const globeGroup = new THREE.Group();
   scene.add(globeGroup);
 
-  // Atmosphere glow — additive blended sphere behind globe
-  const glowGeometry = new THREE.SphereGeometry(GLOBE_RADIUS * 1.15, 64, 64);
+  // Atmosphere glow — Fresnel rim glow (bright at edges, transparent at center)
+  const glowGeometry = new THREE.SphereGeometry(GLOBE_RADIUS * 1.12, 64, 64);
   const glowMaterial = new THREE.ShaderMaterial({
     transparent: true,
-    side: THREE.BackSide,
+    side: THREE.FrontSide,
+    depthWrite: false,
     uniforms: {
       glowColor: { value: new THREE.Color(COLORS.glow) },
     },
     vertexShader: `
       varying vec3 vNormal;
+      varying vec3 vViewDir;
       void main() {
         vNormal = normalize(normalMatrix * normal);
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
+        vViewDir = normalize(-mvPos.xyz);
+        gl_Position = projectionMatrix * mvPos;
       }
     `,
     fragmentShader: `
       uniform vec3 glowColor;
       varying vec3 vNormal;
+      varying vec3 vViewDir;
       void main() {
-        float intensity = pow(0.65 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 3.0);
-        gl_FragColor = vec4(glowColor, intensity * 0.4);
+        float fresnel = 1.0 - dot(vNormal, vViewDir);
+        float rim = pow(fresnel, 3.5) * 0.6;
+        gl_FragColor = vec4(glowColor, rim);
       }
     `,
   });
