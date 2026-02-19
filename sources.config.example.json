@@ -1,0 +1,80 @@
+{
+  "sources": [
+    {
+      "id": "noaa-alerts",
+      "name": "NOAA Weather Alerts",
+      "enabled": true,
+      "category": "weather",
+      "feedType": "atom",
+      "url": "https://alerts.weather.gov/cap/us.php?x=1",
+      "token": null,
+      "params": {},
+      "rateCap": null
+    },
+    {
+      "id": "gdacs",
+      "name": "GDACS Global Disaster Alert",
+      "enabled": true,
+      "category": "weather",
+      "feedType": "rss",
+      "url": "https://www.gdacs.org/xml/rss.xml",
+      "token": null,
+      "params": {},
+      "rateCap": null
+    },
+    {
+      "id": "newsapi-headlines",
+      "name": "NewsAPI — Top Headlines",
+      "enabled": false,
+      "category": "news",
+      "feedType": "newsapi",
+      "url": "https://newsapi.org/v2/top-headlines",
+      "token": "",
+      "params": {
+        "q": "crisis OR disaster OR conflict OR emergency",
+        "language": "en",
+        "pageSize": 50
+      },
+      "rateCap": {
+        "requestsPerDay": 100,
+        "requestsPerHour": null,
+        "note": "NewsAPI free tier limit. Upgrade to developer plan for 500 req/day."
+      }
+    },
+    {
+      "id": "reliefweb",
+      "name": "ReliefWeb Crisis Reports",
+      "enabled": false,
+      "category": "news",
+      "feedType": "reliefweb",
+      "url": "https://api.reliefweb.int/v1/reports",
+      "token": null,
+      "params": {
+        "appname": "globalwatch",
+        "limit": 20
+      },
+      "rateCap": {
+        "requestsPerDay": 1000,
+        "requestsPerHour": null,
+        "note": "Public API — no token required, but appname param is requested by ReliefWeb."
+      }
+    },
+    {
+      "id": "openweather-alerts",
+      "name": "OpenWeatherMap — Severe Alerts",
+      "enabled": false,
+      "category": "weather",
+      "feedType": "openweather",
+      "url": "https://api.openweathermap.org/data/3.0/onecall",
+      "token": "",
+      "params": {
+        "exclude": "minutely,hourly,daily,current"
+      },
+      "rateCap": {
+        "requestsPerDay": 1000,
+        "requestsPerHour": null,
+        "note": "One Call API 3.0 — 1000 calls/day free, then $0.0015 per call."
+      }
+    }
+  ]
+}

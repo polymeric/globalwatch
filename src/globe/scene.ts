@@ -7,13 +7,14 @@ import {
   createInteractionState,
   setupInteractions,
   updateInteractions,
+  type HoverData,
 } from './interactions';
 
 export interface GlobeScene {
   destroy: () => void;
 }
 
-export function initGlobeScene(container: HTMLElement): GlobeScene {
+export function initGlobeScene(container: HTMLElement, onHover?: (data: HoverData) => void): GlobeScene {
   // Renderer
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -85,7 +86,7 @@ export function initGlobeScene(container: HTMLElement): GlobeScene {
 
   // Interactions
   const interactionState = createInteractionState();
-  const cleanupInteractions = setupInteractions(renderer.domElement, globeGroup, interactionState);
+  const cleanupInteractions = setupInteractions(renderer.domElement, globeGroup, interactionState, camera, markers, onHover);
 
   // Resize handler
   function resize() {

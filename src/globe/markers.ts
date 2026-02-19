@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { MARKER_RADIUS, COLORS } from './materials';
+import { MARKER_RADIUS } from './materials';
 
 const DEG2RAD = Math.PI / 180;
 
@@ -7,23 +7,25 @@ export interface EventMarker {
   lat: number;
   lon: number;
   label: string;
+  headline: string;
   severity: 'low' | 'medium' | 'high';
+  category: 'weather' | 'news';
 }
 
-const SEVERITY_COLORS: Record<string, number> = {
-  low: 0x2a8a2a,
-  medium: COLORS.primary,
-  high: COLORS.bright,
+// Blue shades for weather, red shades for news — severity controls brightness
+const MARKER_COLORS: Record<EventMarker['category'], Record<EventMarker['severity'], number>> = {
+  weather: { low: 0x1a4a8a, medium: 0x2a7fff, high: 0x80c8ff },
+  news:    { low: 0x8a1a1a, medium: 0xff3a3a, high: 0xff9090 },
 };
 
 // Demo markers representing example events
 const DEMO_MARKERS: EventMarker[] = [
-  { lat: 35.6762, lon: 139.6503, label: 'Typhoon Warning — Tokyo', severity: 'high' },
-  { lat: 25.276, lon: 55.2962, label: 'Sandstorm Alert — Dubai', severity: 'medium' },
-  { lat: -33.8688, lon: 151.2093, label: 'Bushfire Risk — Sydney', severity: 'high' },
-  { lat: 51.5074, lon: -0.1278, label: 'Flood Watch — London', severity: 'low' },
-  { lat: 37.7749, lon: -122.4194, label: 'Earthquake Swarm — San Francisco', severity: 'medium' },
-  { lat: -22.9068, lon: -43.1729, label: 'Landslide Warning — Rio de Janeiro', severity: 'high' },
+  { lat: 35.6762, lon: 139.6503, label: 'Typhoon Warning — Tokyo', headline: 'Category 4 typhoon approaching Japanese coast, evacuation orders issued for coastal prefectures', severity: 'high', category: 'weather' },
+  { lat: 25.276, lon: 55.2962, label: 'Sandstorm Alert — Dubai', headline: 'Severe sandstorm reducing visibility to near zero across UAE, airports reporting delays', severity: 'medium', category: 'weather' },
+  { lat: -33.8688, lon: 151.2093, label: 'Bushfire Risk — Sydney', headline: 'Extreme fire danger declared for greater Sydney region amid record heat and critical fire weather', severity: 'high', category: 'weather' },
+  { lat: 51.5074, lon: -0.1278, label: 'Flood Watch — London', headline: 'Thames Barrier deployed as sustained rainfall brings River Thames to warning levels', severity: 'low', category: 'weather' },
+  { lat: 37.7749, lon: -122.4194, label: 'Earthquake Swarm — San Francisco', headline: 'Series of magnitude 3–4 tremors recorded near Hayward Fault, USGS monitoring for escalation', severity: 'medium', category: 'news' },
+  { lat: -22.9068, lon: -43.1729, label: 'Landslide Warning — Rio de Janeiro', headline: 'Hillside communities evacuated as heavy rains trigger multiple landslides, emergency services deployed', severity: 'high', category: 'news' },
 ];
 
 function latLonToPosition(lat: number, lon: number, r: number): THREE.Vector3 {
@@ -40,7 +42,7 @@ function createTriangleMarker(marker: EventMarker): THREE.Mesh {
   const size = marker.severity === 'high' ? 0.04 : marker.severity === 'medium' ? 0.03 : 0.025;
   const geometry = new THREE.ConeGeometry(size, size * 2, 3);
   const material = new THREE.MeshBasicMaterial({
-    color: SEVERITY_COLORS[marker.severity],
+    color: MARKER_COLORS[marker.category][marker.severity],
     transparent: true,
     opacity: 0.9,
     side: THREE.DoubleSide,
@@ -54,7 +56,7 @@ function createTriangleMarker(marker: EventMarker): THREE.Mesh {
   mesh.lookAt(pos.clone().multiplyScalar(2));
   mesh.rotateX(Math.PI / 2);
 
-  mesh.userData = { label: marker.label, severity: marker.severity };
+  mesh.userData = { label: marker.label, headline: marker.headline, severity: marker.severity, category: marker.category };
   return mesh;
 }
 

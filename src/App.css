@@ -77,3 +77,52 @@
   0%, 100% { opacity: 1; }
   50% { opacity: 0.4; }
 }
+
+/* Marker hover tooltip */
+.marker-tooltip {
+  position: fixed;
+  pointer-events: none;
+  z-index: 200;
+  background: rgba(10, 26, 10, 0.94);
+  border: 1px solid var(--color-dim);
+  padding: 8px 11px;
+  max-width: 280px;
+  font-family: var(--font-mono);
+  backdrop-filter: blur(4px);
+}
+
+.tooltip-label {
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--color-primary);
+  margin-bottom: 5px;
+  letter-spacing: 0.5px;
+}
+
+.tooltip-headline {
+  font-size: 11px;
+  color: var(--color-primary);
+  opacity: 0.75;
+  line-height: 1.45;
+  margin-bottom: 7px;
+}
+
+.tooltip-meta {
+  display: flex;
+  gap: 6px;
+}
+
+.tooltip-tag {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 1px 5px;
+  border: 1px solid currentColor;
+  opacity: 0.85;
+}
+
+.tooltip-tag--weather { color: #2a7fff; }
+.tooltip-tag--news    { color: #ff3a3a; }
+.tooltip-tag--low     { color: var(--color-primary); opacity: 0.5; }
+.tooltip-tag--medium  { color: var(--color-primary); opacity: 0.75; }
+.tooltip-tag--high    { color: var(--color-bright); }

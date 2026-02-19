@@ -1,6 +1,6 @@
 # globalwatch
 
-A desktop application that displays an interactive 3D globe with a green-on-black matrix-style theme. It renders country outlines, lat/lon grid lines, and triangular markers for dangerous weather patterns, crises, and events sourced from news feeds. Includes a voice-powered AI assistant interface.
+A desktop application that displays an interactive 3D globe with a green-on-black matrix-style theme. It renders country outlines, lat/lon grid lines, and triangular event markers for dangerous weather patterns and news crises sourced from configurable feeds. Includes a voice-powered AI assistant interface.
 
 ![globalwatch](images/666_kb.png)
 
@@ -9,9 +9,11 @@ A desktop application that displays an interactive 3D globe with a green-on-blac
 - Interactive 3D globe with auto-spin (click to pause, drag to rotate/tilt)
 - Green monochrome matrix aesthetic on black background
 - Country outlines rendered from TopoJSON data
-- Triangular event markers with severity-based brightness
-- Marker tooltips with source, timestamp, and severity on hover/click
-- Marker lifecycle management (appear, update, expire)
+- Triangular event markers colour-coded by category and severity:
+  - **Blue** — severe weather events (low → medium → high brightness)
+  - **Red** — news/crisis events (low → medium → high brightness)
+- Hover tooltip on markers showing headline, category, and severity
+- Configurable event sources via `sources.config.json` (URL, API token, feed type, daily/hourly rate caps)
 - Push-to-talk voice interface (STT → AI assistant → TTS)
   - Speech-to-text via [whisper.cpp](https://github.com/ggerganov/whisper.cpp) (native Rust bindings)
   - AI assistant via local LLM (LM Studio / any OpenAI-compatible endpoint)
@@ -66,6 +68,29 @@ The assistant sends queries to an OpenAI-compatible chat completions endpoint at
 
 Hold the voice button in the bottom-right corner of the app, speak your question, and release. The pipeline runs: mic capture → Whisper transcription → LLM response → spoken reply via TTS.
 
+## Event Sources
+
+Event sources are configured in `sources.config.json` at the project root. Each entry supports:
+
+| Field | Description |
+|---|---|
+| `id` | Unique identifier |
+| `name` | Display name |
+| `enabled` | Whether the source is active |
+| `category` | `"weather"` or `"news"` — controls marker colour |
+| `feedType` | Feed parser to use (`atom`, `rss`, `newsapi`, `openweather`, `reliefweb`) |
+| `url` | API or feed endpoint |
+| `token` | API key (leave `""` or `null` if not required) |
+| `params` | Extra query parameters passed to the request |
+| `rateCap` | Optional `{ requestsPerDay, requestsPerHour, note }` — prevents exceeding API limits |
+
+**Setup:** `sources.config.json` is gitignored to prevent tokens from being committed. A template is provided as `sources.config.example.json`. Copy it and fill in your keys:
+
+```bash
+cp sources.config.example.json sources.config.json
+# edit sources.config.json — fill in tokens, set enabled: true for desired sources
+```
+
 ## Make Targets
 
 | Command | Description |
@@ -83,36 +108,39 @@ Hold the voice button in the bottom-right corner of the app, speak your question
 ## Project Structure
 
 ```
-src/                    # React/TypeScript frontend
-├── components/         # React components
-│   ├── Globe.tsx       #   Globe viewer wrapper
-│   ├── VoiceButton.tsx #   Push-to-talk voice UI
-│   └── VoiceButton.css #   Matrix-themed voice button styles
-├── lib/
-│   ├── audioUtils.ts   #   Audio utilities, WAV playback helpers
-│   └── tauriVoice.ts   #   Typed wrappers for Tauri voice commands
-├── globe/              # Three.js globe modules
-│   ├── scene.ts        #   Scene, camera, renderer setup
-│   ├── materials.ts    #   Shared green monochrome materials
-│   ├── wireframe.ts    #   Lat/lon grid lines
-│   ├── countries.ts    #   Country outlines from TopoJSON
-│   ├── markers.ts      #   Event marker rendering + lifecycle
-│   └── interactions.ts #   Mouse/touch controls
-├── data/               # Static data assets (TopoJSON, etc.)
-└── main.tsx            # App entry point
+sources.config.example.json # Event source template (commit-safe, tokens empty)
+sources.config.json         # Your local config with real tokens (gitignored)
 
-src-tauri/              # Tauri 2 / Rust backend
+src/                        # React/TypeScript frontend
+├── components/
+│   ├── Globe.tsx           #   Globe viewer — renders scene, manages hover tooltip
+│   ├── VoiceButton.tsx     #   Push-to-talk voice UI
+│   └── VoiceButton.css
+├── lib/
+│   ├── audioUtils.ts       #   Audio utilities, WAV playback helpers
+│   └── tauriVoice.ts       #   Typed wrappers for Tauri voice commands
+├── globe/
+│   ├── scene.ts            #   Scene, camera, renderer setup
+│   ├── materials.ts        #   Shared colour constants and materials
+│   ├── wireframe.ts        #   Lat/lon grid lines
+│   ├── countries.ts        #   Country outlines from TopoJSON
+│   ├── markers.ts          #   Event marker rendering (blue=weather, red=news)
+│   └── interactions.ts     #   Mouse/touch controls + hover raycasting
+├── data/                   #   Static assets (TopoJSON, etc.)
+└── main.tsx                #   App entry point
+
+src-tauri/                  # Tauri 2 / Rust backend
 ├── src/
-│   ├── main.rs         # Tauri app bootstrap
-│   ├── lib.rs          # Commands, plugins, state management
-│   └── voice/          # Voice pipeline modules
-│       ├── capture.rs  #   Native mic capture via cpal
-│       ├── stt.rs      #   Whisper speech-to-text
-│       ├── llm.rs      #   LM Studio / OpenAI-compatible chat client
-│       ├── tts.rs      #   Native macOS text-to-speech
-│       └── models.rs   #   Model file path management
-├── tauri.conf.json     # App identity, window config, bundling
-└── Cargo.toml          # Rust dependencies
+│   ├── main.rs             #   Tauri app bootstrap
+│   ├── lib.rs              #   Commands, plugins, state management
+│   └── voice/              #   Voice pipeline
+│       ├── capture.rs      #     Native mic capture via cpal
+│       ├── stt.rs          #     Whisper speech-to-text
+│       ├── llm.rs          #     LM Studio / OpenAI-compatible chat client
+│       ├── tts.rs          #     Native macOS text-to-speech
+│       └── models.rs       #     Model file path management
+├── tauri.conf.json         #   App identity, window config, bundling
+└── Cargo.toml              #   Rust dependencies
 ```
 
 ## Tech Stack
@@ -138,11 +166,13 @@ Hold button → Native mic capture (cpal, Rust backend)
 
 ## Data Flow
 
-1. Backend polls news/weather APIs on a schedule
-2. Events are classified by severity and geocoded
-3. Results are stored in SQLite
-4. Frontend fetches active events via Tauri commands
-5. Markers are rendered on the globe with appropriate severity styling
+1. Backend reads `sources.config.json` (or `sources.config.local.json`) at startup
+2. Enabled sources are polled on a schedule, respecting per-source rate caps
+3. Events are classified by category (weather / news) and geocoded
+4. Results are stored in SQLite
+5. Frontend fetches active events via Tauri commands
+6. Markers are rendered on the globe — blue for weather, red for news, brightness by severity
+7. Hovering a marker shows its headline, category badge, and severity badge
 
 ## Packaging
 

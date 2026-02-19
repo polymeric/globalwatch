@@ -14,6 +14,14 @@ dist-ssr
 
 # Tauri / Rust
 src-tauri/target
+src-tauri/gen/
+
+# Platform bundles (build outputs)
+*.dmg
+*.AppImage
+*.deb
+*.msi
+*.exe
 
 # Editor directories and files
 .vscode/*
@@ -26,10 +34,26 @@ src-tauri/target
 *.sln
 *.sw?
 
-# Environment files
+# Environment / secrets
 .env
 .env.*
 
-# SQLite databases
+# Sources config — contains API tokens. Copy sources.config.example.json to
+# sources.config.json and fill in your tokens. The .example file is safe to commit.
+sources.config.json
+
+# API keys, certs, private keys
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+
+# SQLite databases (runtime data, not source)
 *.sqlite
 *.db
+
+# Whisper / ML model files (large binaries — download separately)
+*.bin
+*.gguf
+*.ggml
