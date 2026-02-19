@@ -8,6 +8,7 @@ export interface EventMarker {
   lon: number;
   label: string;
   headline: string;
+  source: string;
   severity: 'low' | 'medium' | 'high';
   category: 'weather' | 'news';
 }
@@ -20,12 +21,12 @@ const MARKER_COLORS: Record<EventMarker['category'], Record<EventMarker['severit
 
 // Demo markers representing example events
 const DEMO_MARKERS: EventMarker[] = [
-  { lat: 35.6762, lon: 139.6503, label: 'Typhoon Warning — Tokyo', headline: 'Category 4 typhoon approaching Japanese coast, evacuation orders issued for coastal prefectures', severity: 'high', category: 'weather' },
-  { lat: 25.276, lon: 55.2962, label: 'Sandstorm Alert — Dubai', headline: 'Severe sandstorm reducing visibility to near zero across UAE, airports reporting delays', severity: 'medium', category: 'weather' },
-  { lat: -33.8688, lon: 151.2093, label: 'Bushfire Risk — Sydney', headline: 'Extreme fire danger declared for greater Sydney region amid record heat and critical fire weather', severity: 'high', category: 'weather' },
-  { lat: 51.5074, lon: -0.1278, label: 'Flood Watch — London', headline: 'Thames Barrier deployed as sustained rainfall brings River Thames to warning levels', severity: 'low', category: 'weather' },
-  { lat: 37.7749, lon: -122.4194, label: 'Earthquake Swarm — San Francisco', headline: 'Series of magnitude 3–4 tremors recorded near Hayward Fault, USGS monitoring for escalation', severity: 'medium', category: 'news' },
-  { lat: -22.9068, lon: -43.1729, label: 'Landslide Warning — Rio de Janeiro', headline: 'Hillside communities evacuated as heavy rains trigger multiple landslides, emergency services deployed', severity: 'high', category: 'news' },
+  { lat: 35.6762, lon: 139.6503, label: 'Typhoon Warning — Tokyo', headline: 'Category 4 typhoon approaching Japanese coast, evacuation orders issued for coastal prefectures', source: 'GDACS', severity: 'high', category: 'weather' },
+  { lat: 25.276, lon: 55.2962, label: 'Sandstorm Alert — Dubai', headline: 'Severe sandstorm reducing visibility to near zero across UAE, airports reporting delays', source: 'NOAA Alerts', severity: 'medium', category: 'weather' },
+  { lat: -33.8688, lon: 151.2093, label: 'Bushfire Risk — Sydney', headline: 'Extreme fire danger declared for greater Sydney region amid record heat and critical fire weather', source: 'GDACS', severity: 'high', category: 'weather' },
+  { lat: 51.5074, lon: -0.1278, label: 'Flood Watch — London', headline: 'Thames Barrier deployed as sustained rainfall brings River Thames to warning levels', source: 'NOAA Alerts', severity: 'low', category: 'weather' },
+  { lat: 37.7749, lon: -122.4194, label: 'Earthquake Swarm — San Francisco', headline: 'Series of magnitude 3–4 tremors recorded near Hayward Fault, USGS monitoring for escalation', source: 'ReliefWeb', severity: 'medium', category: 'news' },
+  { lat: -22.9068, lon: -43.1729, label: 'Landslide Warning — Rio de Janeiro', headline: 'Hillside communities evacuated as heavy rains trigger multiple landslides, emergency services deployed', source: 'NewsAPI', severity: 'high', category: 'news' },
 ];
 
 function latLonToPosition(lat: number, lon: number, r: number): THREE.Vector3 {
@@ -56,7 +57,7 @@ function createTriangleMarker(marker: EventMarker): THREE.Mesh {
   mesh.lookAt(pos.clone().multiplyScalar(2));
   mesh.rotateX(Math.PI / 2);
 
-  mesh.userData = { label: marker.label, headline: marker.headline, severity: marker.severity, category: marker.category };
+  mesh.userData = { label: marker.label, headline: marker.headline, source: marker.source, severity: marker.severity, category: marker.category };
   return mesh;
 }
 

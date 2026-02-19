@@ -126,3 +126,11 @@
 .tooltip-tag--low     { color: var(--color-primary); opacity: 0.5; }
 .tooltip-tag--medium  { color: var(--color-primary); opacity: 0.75; }
 .tooltip-tag--high    { color: var(--color-bright); }
+
+.tooltip-source {
+  font-size: 10px;
+  letter-spacing: 1px;
+  opacity: 0.5;
+  margin-left: auto;
+  color: var(--color-primary);
+}

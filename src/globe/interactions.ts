@@ -11,6 +11,7 @@ export interface InteractionState {
 export type HoverData = {
   label: string;
   headline: string;
+  source: string;
   severity: string;
   category: string;
   x: number;
@@ -59,7 +60,7 @@ export function setupInteractions(
       const hits = raycaster.intersectObjects(markerGroup.children, false);
       if (hits.length > 0) {
         const { userData } = hits[0].object;
-        onHover({ label: userData.label, headline: userData.headline, severity: userData.severity, category: userData.category, x: e.clientX, y: e.clientY });
+        onHover({ label: userData.label, headline: userData.headline, source: userData.source, severity: userData.severity, category: userData.category, x: e.clientX, y: e.clientY });
       } else {
         onHover(null);
       }

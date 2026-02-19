@@ -34,6 +34,7 @@ export default function Globe() {
             <span className={`tooltip-tag tooltip-tag--${tooltip.severity}`}>
               {tooltip.severity}
             </span>
+            <span className="tooltip-source">{tooltip.source}</span>
           </div>
         </div>
       )}
