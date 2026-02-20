@@ -60,6 +60,23 @@
       }
     },
     {
+      "id": "kagi-search",
+      "name": "Kagi Search (voice assistant web search)",
+      "enabled": false,
+      "category": "search",
+      "feedType": "kagi",
+      "url": "https://kagi.com/api/v0/search",
+      "token": "",
+      "params": {
+        "limit": 5
+      },
+      "rateCap": {
+        "requestsPerDay": 10,
+        "requestsPerHour": null,
+        "note": "Prepaid API credits — $0.025/query. Manage balance at kagi.com/settings/billing. API access is in closed beta — request at kagi.com/api."
+      }
+    },
+    {
       "id": "openweather-alerts",
       "name": "OpenWeatherMap — Severe Alerts",
       "enabled": false,
