@@ -19,6 +19,7 @@ A desktop application that displays an interactive 3D globe with a green-on-blac
   - AI assistant via local LLM (LM Studio / any OpenAI-compatible endpoint)
   - Text-to-speech via native macOS `say` command (enhanced voices supported)
   - Conversation history with context carry-over
+  - **[Experimental]** Real-time web search — when a [Kagi](https://kagi.com/) API key is configured the LLM gains a `web_search` tool and can look up current events mid-conversation (disabled by default; Kagi API access is in closed beta)
 - 60 FPS rendering target
 
 ## Prerequisites
@@ -67,6 +68,27 @@ The assistant sends queries to an OpenAI-compatible chat completions endpoint at
 **3. Use the voice button**
 
 Hold the voice button in the bottom-right corner of the app, speak your question, and release. The pipeline runs: mic capture → Whisper transcription → LLM response → spoken reply via TTS.
+
+**4. (Experimental) Enable web search**
+
+> **Note:** Kagi API access is currently in closed beta. Request access at [kagi.com/api](https://kagi.com/api) and manage prepaid credits at kagi.com/settings/billing (~$0.025/query).
+
+When a Kagi API key is present, the LLM is given a `web_search` tool and will automatically use it for questions that need real-time information. Without a key the assistant behaves as before — no web access.
+
+Configure the key in either of two ways:
+
+- **Environment variable** — set `KAGI_API_KEY` before launching the app.
+- **`sources.config.json`** — add your token to the `kagi-search` entry (already present in `sources.config.example.json`):
+
+```json
+{
+  "id": "kagi-search",
+  "token": "YOUR_KAGI_API_KEY",
+  "enabled": false
+}
+```
+
+The `enabled` flag controls event-feed polling and is unused for web search — the search tool activates solely based on whether a non-empty token is found.
 
 ## Event Sources
 
@@ -153,6 +175,7 @@ src-tauri/                  # Tauri 2 / Rust backend
 - **LLM inference**: Local via [LM Studio](https://lmstudio.ai/) or [Ollama](https://ollama.com/) (OpenAI-compatible API)
 - **Text-to-speech**: Native macOS `say` command (enhanced system voices)
 - **Audio capture**: [cpal](https://github.com/RustAudioGroup/cpal) (native cross-platform audio I/O)
+- **Web search** *(experimental)*: [Kagi Search API](https://kagi.com/api) — tool-calling integration for real-time LLM web search
 
 ## Voice Pipeline
 
@@ -161,6 +184,7 @@ Hold button → Native mic capture (cpal, Rust backend)
     → Downsample to 16kHz mono
     → whisper-rs transcription
     → HTTP POST to LLM (localhost:1234)
+    → [if Kagi key configured] LLM calls web_search tool → Kagi API → result injected into context
     → Response text displayed + spoken via native TTS
 ```
 
