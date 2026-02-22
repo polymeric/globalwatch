@@ -35,10 +35,12 @@ struct SourceConfig {
 
 fn load_sources(app: &tauri::AppHandle) -> Vec<SourceConfig> {
     // Look for sources.config.json next to the app binary / in CWD (dev mode).
+    // In `tauri dev`, CWD is src-tauri/, so also check the parent (project root).
+    let cwd = std::env::current_dir().ok();
     let candidates = [
-        std::env::current_dir()
-            .ok()
-            .map(|d| d.join("sources.config.json")),
+        cwd.as_ref().map(|d| d.join("sources.config.json")),
+        cwd.as_ref()
+            .and_then(|d| d.parent().map(|p| p.join("sources.config.json"))),
         tauri::Manager::path(app).app_data_dir().ok().map(|d| d.join("sources.config.json")),
     ];
 
