@@ -1,9 +1,15 @@
+mod feeds;
 mod tools;
 mod voice;
 
 use std::sync::Mutex;
 use voice::capture::AudioCapture;
 use voice::stt::WhisperState;
+
+#[tauri::command]
+async fn get_events(app: tauri::AppHandle) -> Vec<feeds::FeedEvent> {
+    feeds::fetch_all(&app).await
+}
 
 #[tauri::command]
 async fn check_models_ready(app: tauri::AppHandle) -> Result<bool, String> {
@@ -117,6 +123,7 @@ pub fn run() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
+            get_events,
             check_models_ready,
             get_models_dir,
             load_whisper_model,

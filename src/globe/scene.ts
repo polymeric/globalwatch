@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { COLORS, GLOBE_RADIUS } from './materials';
 import { createGridLines } from './wireframe';
 import { createCountryOutlines } from './countries';
-import { createMarkers, animateMarkers } from './markers';
+import { createMarkers, animateMarkers, createTriangleMarker, type EventMarker } from './markers';
 import {
   createInteractionState,
   setupInteractions,
@@ -12,6 +12,7 @@ import {
 
 export interface GlobeScene {
   destroy: () => void;
+  updateMarkers: (events: EventMarker[]) => void;
 }
 
 export function initGlobeScene(container: HTMLElement, onHover?: (data: HoverData) => void): GlobeScene {
@@ -121,6 +122,18 @@ export function initGlobeScene(container: HTMLElement, onHover?: (data: HoverDat
       cleanupInteractions();
       renderer.dispose();
       renderer.domElement.remove();
+    },
+    updateMarkers(events: EventMarker[]) {
+      for (const child of [...markers.children]) {
+        markers.remove(child);
+        if (child instanceof THREE.Mesh) {
+          child.geometry.dispose();
+          (child.material as THREE.Material).dispose();
+        }
+      }
+      for (const event of events) {
+        markers.add(createTriangleMarker(event));
+      }
     },
   };
 }

@@ -23,6 +23,39 @@
       "rateCap": null
     },
     {
+      "id": "aljazeera",
+      "name": "Al Jazeera — World News",
+      "enabled": false,
+      "category": "news",
+      "feedType": "rss",
+      "url": "https://aljazeera.com/xml/rss/all.xml",
+      "token": null,
+      "params": {},
+      "rateCap": null
+    },
+    {
+      "id": "reuters-world",
+      "name": "Reuters — World News",
+      "enabled": false,
+      "category": "news",
+      "feedType": "rss",
+      "url": "https://openrss.org/www.reuters.com/world/",
+      "token": null,
+      "params": {},
+      "rateCap": null
+    },
+    {
+      "id": "dw-world",
+      "name": "DW — World News",
+      "enabled": false,
+      "category": "news",
+      "feedType": "rss",
+      "url": "https://rss.dw.com/rdf/rss-en-world",
+      "token": null,
+      "params": {},
+      "rateCap": null
+    },
+    {
       "id": "newsapi-headlines",
       "name": "NewsAPI — Top Headlines",
       "enabled": false,
@@ -73,7 +106,7 @@
       "rateCap": {
         "requestsPerDay": 10,
         "requestsPerHour": null,
-        "note": "Prepaid API credits — $0.025/query. Manage balance at kagi.com/settings/billing. API access is in closed beta — request at kagi.com/api."
+        "note": "Prepaid API credits — see provider for current API pricing. Manage balance at kagi.com/settings/billing. API access is in closed beta — request at kagi.com/api."
       }
     },
     {
@@ -90,7 +123,7 @@
       "rateCap": {
         "requestsPerDay": 1000,
         "requestsPerHour": null,
-        "note": "One Call API 3.0 — 1000 calls/day free, then $0.0015 per call."
+        "note": "One Call API 3.0 — see provider for current API pricing."
       }
     }
   ]

@@ -1,16 +1,28 @@
+import { useState, useCallback } from 'react';
 import Globe from './components/Globe';
 import VoiceButton from './components/VoiceButton';
 import './App.css';
 
 function App() {
+  const [eventCount, setEventCount] = useState<number | null>(null);
+
+  const handleEventCount = useCallback((n: number) => {
+    setEventCount(n);
+  }, []);
+
+  const statusText =
+    eventCount === null
+      ? 'ACTIVE MONITORING'
+      : `ACTIVE MONITORING // ${eventCount} EVENTS TRACKED`;
+
   return (
     <div className="app">
       <header className="hud-header">
         <span className="title">Globalwatch</span>
-        <span className="status">ACTIVE MONITORING // 6 EVENTS TRACKED</span>
+        <span className="status">{statusText}</span>
       </header>
 
-      <Globe />
+      <Globe onEventCount={handleEventCount} />
       <VoiceButton />
 
       <footer className="hud-status">

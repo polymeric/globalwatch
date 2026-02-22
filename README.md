@@ -17,17 +17,29 @@ A desktop application that displays an interactive 3D globe with a green-on-blac
 - Push-to-talk voice interface (STT → AI assistant → TTS)
   - Speech-to-text via [whisper.cpp](https://github.com/ggerganov/whisper.cpp) (native Rust bindings)
   - AI assistant via local LLM (LM Studio / any OpenAI-compatible endpoint)
-  - Text-to-speech via native macOS `say` command (enhanced voices supported)
+  - Text-to-speech via native macOS `say` command (enhanced voices) or `espeak-ng` + PipeWire/PulseAudio on Linux
   - Conversation history with context carry-over
   - **[Experimental]** Real-time web search — when a [Kagi](https://kagi.com/) API key is configured the LLM gains a `web_search` tool and can look up current events mid-conversation (disabled by default; Kagi API access is in closed beta)
 - 60 FPS rendering target
+
+## Platform Support
+
+macOS is the primary development target. Linux support is **experimental** — core features work but audio routing may require manual configuration depending on your Bluetooth/audio setup (see [Voice Assistant Setup](#voice-assistant-setup)).
 
 ## Prerequisites
 
 - [Node.js](https://nodejs.org/) (LTS recommended)
 - [Rust](https://www.rust-lang.org/tools/install) 1.77.2+
 - [Tauri 2 prerequisites](https://v2.tauri.app/start/prerequisites/) for your platform (system libs, Xcode CLI tools on macOS, etc.)
-- CMake (required to build whisper.cpp — install via `brew install cmake` on macOS)
+- CMake (required to build whisper.cpp — install via `brew install cmake` on macOS or `sudo pacman -S cmake` on Arch-based Linux)
+
+**Linux additional requirements (voice TTS):**
+```bash
+sudo pacman -S espeak-ng   # Arch/CachyOS
+# or
+sudo apt install espeak-ng # Debian/Ubuntu
+```
+`paplay` (from `libpulse`) is also required for audio output through PipeWire/PulseAudio and is typically pre-installed on desktop Linux.
 
 ## Getting Started
 
@@ -71,7 +83,7 @@ Hold the voice button in the bottom-right corner of the app, speak your question
 
 **4. (Experimental) Enable web search**
 
-> **Note:** Kagi API access is currently in closed beta. Request access at [kagi.com/api](https://kagi.com/api) and manage prepaid credits at kagi.com/settings/billing (~$0.025/query).
+> **Note:** Kagi API access is currently in closed beta. Request access at [kagi.com/api](https://kagi.com/api). See provider for current API pricing.
 
 When a Kagi API key is present, the LLM is given a `web_search` tool and will automatically use it for questions that need real-time information. Without a key the assistant behaves as before — no web access.
 
@@ -159,7 +171,7 @@ src-tauri/                  # Tauri 2 / Rust backend
 │       ├── capture.rs      #     Native mic capture via cpal
 │       ├── stt.rs          #     Whisper speech-to-text
 │       ├── llm.rs          #     LM Studio / OpenAI-compatible chat client
-│       ├── tts.rs          #     Native macOS text-to-speech
+│       ├── tts.rs          #     Text-to-speech (macOS: say, Linux: espeak-ng)
 │       └── models.rs       #     Model file path management
 ├── tauri.conf.json         #   App identity, window config, bundling
 └── Cargo.toml              #   Rust dependencies
@@ -173,7 +185,7 @@ src-tauri/                  # Tauri 2 / Rust backend
 - **Map data**: [TopoJSON](https://github.com/topojson/topojson)
 - **Speech-to-text**: [whisper-rs](https://github.com/tazz4843/whisper-rs) (whisper.cpp Rust bindings)
 - **LLM inference**: Local via [LM Studio](https://lmstudio.ai/) or [Ollama](https://ollama.com/) (OpenAI-compatible API)
-- **Text-to-speech**: Native macOS `say` command (enhanced system voices)
+- **Text-to-speech**: Native macOS `say` command (enhanced system voices) / `espeak-ng` + PipeWire on Linux
 - **Audio capture**: [cpal](https://github.com/RustAudioGroup/cpal) (native cross-platform audio I/O)
 - **Web search** *(experimental)*: [Kagi Search API](https://kagi.com/api) — tool-calling integration for real-time LLM web search
 
